@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "815881811086",
+    "firebase_url": "https://asspru221-default-rtdb.firebaseio.com",
+    "project_id": "asspru221",
+    "storage_bucket": "asspru221.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815881811086:android:94c264e34bb186350845df",
+        "android_client_info": {
+          "package_name": "com.pp.kitchenchaosdb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfHMY-8zmDKQnNU2G3wkvesPiWyjkFSdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
