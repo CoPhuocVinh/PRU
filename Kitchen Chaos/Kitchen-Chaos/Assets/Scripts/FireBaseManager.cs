@@ -26,6 +26,7 @@ public class FireBaseManager : MonoBehaviour
             RemoveAllRecipeData();
             FetchRecipeData();
             ListenForRecipeDataChanges();
+            IsFullOrder(false);
         });
        
     }
@@ -95,6 +96,20 @@ public class FireBaseManager : MonoBehaviour
             }
 
             Debug.Log("All recipe data removed successfully.");
+        });
+    }
+
+    public void IsFullOrder(bool isFullOrder)
+    {
+        reference.Child("isFullOrder").SetValueAsync(isFullOrder).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError($"Failed to update IsFullOrder: {task.Exception}");
+                return;
+            }
+
+            Debug.Log("IsFullOrder updated successfully.");
         });
     }
 }
