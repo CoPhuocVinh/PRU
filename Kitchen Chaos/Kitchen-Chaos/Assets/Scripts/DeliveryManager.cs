@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeliveryManager : MonoBehaviour
 {
-    public event EventHandler OnRecipeSpawned;
+    public event EventHandler<string> OnRecipeSpawned;
     public event EventHandler OnRecipeCompleted;
     public event EventHandler OnRecipeSuccess;
     public event EventHandler OnRecipeFailed;
@@ -13,6 +13,7 @@ public class DeliveryManager : MonoBehaviour
 
     [SerializeField] private RecipeListSO recipeListSO;
     [SerializeField] private List<RecipeSO> waitingRecipeSOList;
+    [SerializeField] private List<RecipeSOUI> waitingRecipeSOListUI;
     private float spawnRecipeTimer;
     private float spawnRecipeTimerMax = 4f;
     private int waitingRecipesMax = 4;
@@ -27,9 +28,10 @@ public class DeliveryManager : MonoBehaviour
         Instance = this;
         _fireBaseManager = GetComponent<FireBaseManager>();
         waitingRecipeSOList = new List<RecipeSO>();
+        waitingRecipeSOListUI = new List<RecipeSOUI>();
     }
 
-    public void OrderRecipe(string recipeName)
+    public void OrderRecipe(string recipeName, string time)
     {
         RecipeSO orderRecipe = null;
         foreach (var recipe in recipeListSO.recipeSOList)
@@ -46,7 +48,9 @@ public class DeliveryManager : MonoBehaviour
             RecipeSO waitingRecipeSO = orderRecipe;
             waitingRecipeSOList.Add(waitingRecipeSO);
 
-            OnRecipeSpawned?.Invoke(this, EventArgs.Empty);
+            RecipeSOUI r = new RecipeSOUI(waitingRecipeSO, time);
+            waitingRecipeSOListUI.Add(r);
+            OnRecipeSpawned?.Invoke(this, time);
         }
 
         if (waitingRecipeSOList.Count >= waitingRecipesMax)
@@ -89,6 +93,7 @@ public class DeliveryManager : MonoBehaviour
                     successfulRecipesAmount++;
 
                     waitingRecipeSOList.RemoveAt(i);
+                    waitingRecipeSOListUI.RemoveAt(i);
 
                     OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
                     OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
@@ -100,13 +105,26 @@ public class DeliveryManager : MonoBehaviour
         OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 
-    public List<RecipeSO> GetWaitingRecipeSOList()
+    public List<RecipeSOUI> GetWaitingRecipeSOList()
     {
-        return waitingRecipeSOList;
+        return waitingRecipeSOListUI;
     }
 
     public int GetSuccessfulRecipesAmount()
     {
         return successfulRecipesAmount;
+    }
+}
+
+[System.Serializable]
+public class RecipeSOUI
+{
+    public RecipeSO recipeSO;
+    public string time;
+
+    public RecipeSOUI(RecipeSO recipeSO, string time)
+    {
+        this.recipeSO = recipeSO;
+        this.time = time;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,7 @@ public class FireBaseManager : MonoBehaviour
         {
             return;
         }
-        DeliveryManager.Instance.OrderRecipe(activeRecipe[activeRecipe.Count - 1].value);
+        DeliveryManager.Instance.OrderRecipe(activeRecipe[activeRecipe.Count - 1].value, activeRecipe[activeRecipe.Count - 1].key);
     }
 
     void FetchRecipeData()
@@ -71,8 +72,15 @@ public class FireBaseManager : MonoBehaviour
                     string key = childSnapshot.Key;
                     string value = childSnapshot.Value.ToString();
 
-                    FirebaseRecipeData recipeData = new FirebaseRecipeData(key, value);
+                    DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(key));
+                    TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+                    DateTime dateTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeOffset.UtcDateTime, timeZone);
+
+                    string formattedDateTime = dateTime.ToString("dd/MM/yyyy HH:mm:ss");
+
+                    FirebaseRecipeData recipeData = new FirebaseRecipeData(formattedDateTime, value);
                     activeRecipe.Add(recipeData);
+
                     Debug.Log($"Recipe key: {key}, value: {value}");
                 }
                 Debug.Log("????: " + activeRecipe.Count);

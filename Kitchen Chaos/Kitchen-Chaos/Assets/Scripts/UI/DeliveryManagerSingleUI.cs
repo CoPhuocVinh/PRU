@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class DeliveryManagerSingleUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI recipeNameText;
+    [SerializeField] private TextMeshProUGUI recipeTimeText;
     [SerializeField] private Transform iconContainer;
     [SerializeField] private Transform iconTemplate;
 
@@ -13,11 +14,12 @@ public class DeliveryManagerSingleUI : MonoBehaviour
         iconTemplate.gameObject.SetActive(false);    
     }
 
-    public void SetRecipeSO(RecipeSO recipeSO)
+    public void SetRecipeSO(RecipeSOUI recipeSO)
     {
-        recipeNameText.text = recipeSO.recipeName;
+        recipeNameText.text = recipeSO.recipeSO.recipeName;
+        recipeTimeText.text = recipeSO.time;
 
-        foreach(Transform child in iconContainer)
+        foreach (Transform child in iconContainer)
         {
             if(child == iconTemplate)
             {
@@ -27,7 +29,7 @@ public class DeliveryManagerSingleUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach(KitchenObjectSO kitchenObjectSO in recipeSO.kitchenObjectSOList)
+        foreach(KitchenObjectSO kitchenObjectSO in recipeSO.recipeSO.kitchenObjectSOList)
         {
             Transform iconTransform = Instantiate(iconTemplate, iconContainer);
             iconTransform.gameObject.SetActive(true);
